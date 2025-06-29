@@ -1,0 +1,50 @@
+from sqlalchemy import create_engine
+from sqlalchemy.orm import sessionmaker
+from datetime import datetime
+
+DB_USER = 'your_username'
+DB_PASSWORD = 'your_password'
+DB_HOST = 'localhost'
+DB_PORT = '5432'
+DB_NAME = 'your_database_name'
+
+DATABASE_URL = f"postgresql://{DB_USER}:{DB_PASSWORD}@{DB_HOST}:{DB_PORT}/{DB_NAME}"
+
+engine = create_engine(DATABASE_URL)
+Session = sessionmaker(bind=engine)
+session = Session()
+
+def get_publisher_sales(publisher_input):
+    try:
+        publisher_id = int(publisher_input)
+        publisher = session.query(Publisher).filter(Publisher.id == publisher_id).first()
+    except ValueError:
+        publisher = session.query(Publisher).filter(Publisher.name.ilike(f"%{publisher_input}%")).first()
+    
+    if not publisher:
+        print("Издатель не найден")
+        return
+    
+    sales_data = session.query(
+        Book.title,
+        Shop.name,
+        Sale.price,
+        Sale.date_sale
+    ).join(Publisher).join(Stock).join(Shop).join(Sale).filter(
+        Publisher.id == publisher.id
+    ).all()
+    
+    if not sales_data:
+        print("Нет данных о продажах книг этого издателя")
+        return
+    
+    print(f"Результаты для издателя: {publisher.name}")
+    print("-" * 80)
+    for title, shop_name, price, date_sale in sales_data:
+        formatted_date = date_sale.strftime("%d-%m-%Y")
+        print(f"{title} | {shop_name} | {price} | {formatted_date}")
+
+if __name__ == "__main__":
+    publisher_input = input("Введите имя или ID издателя: ")
+    get_publisher_sales(publisher_input)
+    session.close()
