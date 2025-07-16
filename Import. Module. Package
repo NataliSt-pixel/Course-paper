@@ -1,0 +1,32 @@
+#main.ру
+
+from application.salary import calculate_salary
+from application.db.people import get_employees
+from datetime import datetime
+
+if __name__ == '__main__':
+    calculate_salary()
+    get_employees()
+    print(f'Текущая дата: {datetime.now().date()}')
+
+#dirty_main.py
+
+from application.salary import *
+from application.db.people import *
+from datetime import datetime
+
+if __name__ == '__main__':
+    calculate_salary()
+    get_employees()
+    print(f'Текущая дата: {datetime.now().date()}')
+
+#application/salary.py
+def calculate_salary():
+    print('Расчёт зарплаты выполнен')
+
+#application/db/people.py
+
+def get_employees():
+    print('Список сотрудников получен')
+
+requests==2.31.0
