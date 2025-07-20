@@ -21,12 +21,13 @@ if __name__ == '__main__':
     print(f'Текущая дата: {datetime.now().date()}')
 
 #application/salary.py
+
 def calculate_salary():
-    print('Расчёт зарплаты выполнен')
+    print('Функция calculate_salary() из salary.py')
 
 #application/db/people.py
 
 def get_employees():
-    print('Список сотрудников получен')
+    print('Функция get_employees() из people.py')
 
 requests==2.31.0
